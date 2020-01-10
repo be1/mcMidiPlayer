@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <unistd.h>
+
+#define _USE_MATH_DEFINES
+#include <cmath> 
 
 #include "faust/audio/jack-dsp.h"
 #include "faust/dsp/llvm-dsp.h"
@@ -67,8 +71,8 @@ int main(int argc, char* argv[]){
      cerr << "Cannot create instance "<< endl;
      exit(EXIT_FAILURE);
   }
-  GUI* interface = new GTKUI(name,0,NULL);
-  DSP->buildUserInterface(interface);
+  GUI* uinterface = new GTKUI(name,0,NULL);
+  DSP->buildUserInterface(uinterface);
   FUI* finterface = new FUI();
   DSP->buildUserInterface(finterface);
   SoundUI* soundinterface = new SoundUI();
@@ -102,14 +106,14 @@ int main(int argc, char* argv[]){
   if (is_midi) {
      midiinterface->run();
   }
-  interface->run();
+  uinterface->run();
   
   audio.stop();
   
   finterface->saveState(rcfilename);
   
   delete DSP;
-  delete interface;
+  delete uinterface;
   delete finterface;
   delete oscinterface;
   delete midiinterface;

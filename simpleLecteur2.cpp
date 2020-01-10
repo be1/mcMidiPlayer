@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <unistd.h>
+#include <boost/algorithm/string/replace.hpp>
+
+#define _USE_MATH_DEFINES
+#include <cmath> 
 
 #include "faust/audio/jack-dsp.h"
 #include "faust/dsp/llvm-dsp.h"
@@ -38,12 +43,13 @@ int main(int argc, char* argv[]){
   sf_close(sndfile) ;
   cout << "canaux : " << sfinfo.channels<<"Sample rate = "<< sfinfo.samplerate<<"frames : "<<sfinfo.frames<< endl;
   string nameFile="simplePlayer.dsp";
-  
+  string nname=argv[argc-1];
+   boost::replace_all(nname,"\\","/");
   string prog;
-	 prog=prog+"import(\"stdfaust.lib\");";
-	 prog=prog+"import(\"soundfiles.lib\");";
-	 prog=prog+"ds=soundfile(\"[url:{\'"+argv[argc-1]+"\'}]\","+to_string(sfinfo.channels)+");";
-	 
+	 prog=prog+"import(\"c://msys64/usr/local/share/faust/stdfaust.lib\");";
+	 prog=prog+"import(\"c://msys64/usr/local/share/faust/soundfiles.lib\");";
+	 prog=prog+"ds=soundfile(\"[url:{\'"+nname+"\'}]\","+to_string(sfinfo.channels)+");";
+	
 	 prog=prog+"vmeter(x)= attach(x, envelop(x) : vbargraph(\"[2][unit:dB]\", -70, +5));";
 	 prog=prog+"envelop = abs : max ~ -(1.0/ma.SR) : max(ba.db2linear(-70)) : ba.linear2db;";
 	 prog=prog+"sample1 = so.sound(ds, 0);";
@@ -96,8 +102,8 @@ int main(int argc, char* argv[]){
      cerr << "Cannot create instance "<< endl;
      exit(EXIT_FAILURE);
   }
-  GUI* interface = new GTKUI(nameAudio,0,NULL);
-  DSP->buildUserInterface(interface);
+  GUI* uinterface = new GTKUI(nameAudio,0,NULL);
+  DSP->buildUserInterface(uinterface);
   FUI* finterface = new FUI();
   DSP->buildUserInterface(finterface);
   SoundUI* soundinterface = new SoundUI();
@@ -126,14 +132,14 @@ int main(int argc, char* argv[]){
   		oscinterface->run();
   }
   
-  interface->run();
+  uinterface->run();
   
   audio.stop();
   
   finterface->saveState(rcfilename);
   
   delete DSP;
-  delete interface;
+  delete uinterface;
   delete finterface;
   delete oscinterface;
   delete soundinterface;

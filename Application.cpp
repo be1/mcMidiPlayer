@@ -8,8 +8,14 @@
 #include <string>
 #include <cstring>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <vector>
+#include <unistd.h>
 
+#define _USE_MATH_DEFINES
+#include <cmath> 
+
+/*
 #include "faust/audio/jack-dsp.h"
 #include "faust/dsp/llvm-dsp.h"
 #include "faust/dsp/interpreter-dsp.h"
@@ -24,7 +30,7 @@
 #include "faust/gui/OSCControler.h"
 #include "faust/gui/SoundUI.h"
 #include "faust/misc.h"
-
+*/
 
 
 #include "Application.h"
@@ -32,19 +38,21 @@
 #include "parametres.h"
 #include "info.h"
 
-
+/*
 using namespace std;
 list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
+*/
+using namespace std;
 
 Application::Application(string dossier){
   std::stringstream adr;
   string s=getenv("HOME");
-  string ds="/.mcMidiPlayer/parametres.conf";
-  fichierParametres=s+ds;
+  string ds="parametres.conf";
+  fichierParametres=ds;
   adr.clear();
   adr.str("");
-  dossierConfig="/usr/local/share/mcMidiPlayer";
+  dossierConfig=dossier;
   adr << std::fixed <<dossierConfig<< "/gui";
   appGui=adr.str();
   adr.clear();
@@ -243,7 +251,7 @@ string Application::getGui() const {
 void Application::appInitMenu(){
   stringstream adr;
  
-  adr << std::fixed << appGui<<"/"<<"Arial.ttf";
+  adr << std::fixed << appGui<<"/Arial.ttf";
   font.loadFromFile(adr.str());
   adr.clear();
   adr.str("");
@@ -554,7 +562,7 @@ void Application::appWindow(){
   winWxScale = 1;
   winWyScale = 1;
   
-  window.create(sf::VideoMode(windowAppWidth, windowAppHeight), "embedFaust");
+  window.create(sf::VideoMode(windowAppWidth, windowAppHeight), "mcMidiPlayer");
   sf::RectangleShape menuBar(sf::Vector2f( windowAppWidth,menuBarHeight));
   menuBar.setFillColor(AppBackGroundMenuBar);
   
@@ -732,6 +740,7 @@ void Application::onClick(sf::Event e){
    	float hp=((e.mouseButton.x-52)/858.0)*4;
    	float vp=((e.mouseButton.y-127)/555.0)*16;
    	string s;
+   	string sd="\\";
    	sf::String vs;
    	int id=(int)vp;
    	int idh=(int)hp*16;
@@ -745,7 +754,7 @@ void Application::onClick(sf::Event e){
 		  	  string extension2=rtf2.substr(rtf2.length()-5,5);
 		  	  if(extension2==".flac" || extension2==".aiff" || extension==".wav" || extension==".ogg" ){
 		  	  	 keyActive=id+idh+offsetWorkSpace;
-		  	  	 fileNameF[keyActive]=getcwd(NULL,0)+s+rtf2;
+		  	  	 fileNameF[keyActive]=getcwd(NULL,0)+sd+rtf2;
 		  	  	 s=rtf2.substr(0,20);
 		  	  	 vs = sf::String::fromUtf8(s.begin(), s.end());
 		  	  	 fileName[keyActive].setString(vs);
@@ -858,12 +867,15 @@ void Application::genDSP(){
 	int countFile=0;
 	for(int i=0;i<128;i++){
 		if(fileNameF[i]!=""){
+			 cout << "files : "<<  fileNameF[i]<< endl;
 		  listFile=listFile+s1+fileNameF[i]+s2;
 		  keydef[countFile]=i;
 		  countFile++;
 		}
    }
    listFile=listFile.substr(0,listFile.length()-1);
+    boost::replace_all(listFile,"\\","/");
+   
    if(countFile==0){
 		bool rt=newInfo.drawInfo(4, appGui, "Alerte");
 		compileFlag=1;
@@ -888,8 +900,8 @@ void Application::genDSP(){
         fichier<<"declare author 		\"D.Blanchemain\";"<<endl;
         fichier<<"declare license 	\"BSD\";"<<endl;
         fichier<<"declare copyright 	\"D.Blanchemain 2019\";\n"<<endl;
-	     fichier<<"import(\"stdfaust.lib\");"<<endl;
-	     fichier<<"import(\"soundfiles.lib\");\n"<<endl;
+	     fichier<<"import(\"c://msys64/usr/local/share/faust/stdfaust.lib\");"<<endl;
+	     fichier<<"import(\"c://msys64/usr/local/share/faust/soundfiles.lib\");\n"<<endl;
 	     fichier<<"ds0=soundfile(\"[url:{"<<listFile<<"}]\","<<stoi(nbcanaux)<<");"<<endl;
 	     fichier<<"sample(n)=so.sound(ds0,n);"<<endl;
 	     

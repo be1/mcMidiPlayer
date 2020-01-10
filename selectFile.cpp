@@ -8,6 +8,7 @@
 #include <string>
 #include <cstring>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "selectFile.h"
 #include "info.h"
@@ -436,7 +437,7 @@ void selectFile::onClick(sf::Event e){
 		  	 char file[vecFs[id].length() + 1];
 	       strcpy(file, vecFs[id].c_str());
 	       char commande[255];
-	       snprintf(commande, 255, "%s %s/%s", simplePlayer,getcwd(NULL,0), file);
+	       snprintf(commande, 255, "%s %s\\%s", simplePlayer,getcwd(NULL,0), file);
 	       std::cout << "player : " << commande << std::endl;
 		    system(commande);
 		  }
