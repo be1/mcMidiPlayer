@@ -1,0 +1,139 @@
+--- a/Application.cpp
++++ b/Application.cpp
+@@ -24,7 +24,7 @@
+ #include "faust/gui/OSCControler.h"
+ #include "faust/gui/SoundUI.h"
+ #include "faust/misc.h"
+-
++#include <faust/dsp/libfaust-c.h>
+ 
+ 
+ #include "Application.h"
+--- a/Makefile
++++ b/Makefile
+@@ -1,21 +1,18 @@
+-LIB ?= /usr/local/lib
+-INC = /usr/local/faust
+-
+ DESTDIR ?=
+-PREFIX ?= 
++PREFIX ?=/usr/local
+ 
+ prefix := $(DESTDIR)$(PREFIX)
+ 
+-all: midiPlayer simplePlayer2 mcMidiPlayer
++all: mcMidiPlayer
+ midiPlayer: simpleLecteur.cpp
+-	$(CXX)  -std=c++17 -O3 simpleLecteur.cpp   -ljack -lsndfile -lfaust -llo -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype -lpthread `pkg-config  ` -lOSCFaust -o midiPlayer
++	$(CXX)  -std=c++17 -g -I/usr/share/faust/osclib/faust/src/lib -I/usr/share/faust/osclib/oscpack -I/usr/share/faust/osclib/faust/src/osc -I/usr/share/faust/osclib/faust simpleLecteur.cpp /usr/share/faust/osclib/faust/src/nodes/MessageDriven.cpp /usr/share/faust/osclib/faust/src/nodes/FaustFactory.cpp /usr/share/faust/osclib/faust/src/OSCControler.cpp /usr/share/faust/osclib/faust/src/nodes/FaustNode.cpp `pkg-config --libs jack` `pkg-config --libs sndfile` -llo `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -pthread -o midiPlayer
+ 
+ simplePlayer2: simpleLecteur2.cpp
+-	$(CXX)  -std=c++17 -O3 simpleLecteur2.cpp   -ljack -lsndfile -lfaust -llo -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype -lpthread `pkg-config  ` -lOSCFaust -o simplePlayer2
++	$(CXX)  -std=c++17 -g -I/usr/share/faust/osclib/faust/src/lib -I/usr/share/faust/osclib/oscpack -I/usr/share/faust/osclib/faust/src/osc -I/usr/share/faust/osclib/faust simpleLecteur2.cpp /usr/share/faust/osclib/faust/src/nodes/MessageDriven.cpp /usr/share/faust/osclib/faust/src/nodes/FaustFactory.cpp /usr/share/faust/osclib/faust/src/OSCControler.cpp /usr/share/faust/osclib/faust/src/nodes/FaustNode.cpp `pkg-config --libs jack` `pkg-config --libs sndfile` -llo `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -pthread -o simplePlayer2
+ 
+  
+ mcMidiPlayer: main.cpp 
+-	$(CXX)  -std=c++17 -O3 parametres.cpp parametres.h info.cpp info.h selectFile.cpp selectFile.h Application.cpp main.cpp Application.h   -I$(INC) -lboost_system -lboost_filesystem -ljack -lsndfile -lfaust -lsfml-graphics -lsfml-window -lsfml-system -llo -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -lGL -lGLU  -lGL  -DGL_GLEXT_PROTOTYPES  -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype -lpthread `pkg-config  ` -lOSCFaust -o mcMidiPlayer.bin
++	$(CXX)  -std=c++17 -g -I/usr/share/faust/osclib/faust/src/lib -I/usr/share/faust/osclib/oscpack -I/usr/share/faust/osclib/faust/src/osc -I/usr/share/faust/osclib/faust -I/usr/share/faust/osclib/faust/src/threads /usr/share/faust/osclib/oscpack/osc/OscReceivedElements.cpp /usr/share/faust/osclib/faust/src/osc/OSCListener.cpp /usr/share/faust/osclib/faust/src/threads/pthreads_impl.cpp /usr/share/faust/osclib/faust/src/osc/OSCSetup.cpp /usr/share/faust/osclib/oscpack/ip/posix/NetworkingUtils.cpp /usr/share/faust/osclib/oscpack/osc/OscTypes.cpp /usr/share/faust/osclib/oscpack/ip/IpEndpointName.cpp /usr/share/faust/osclib/oscpack/osc/OscOutboundPacketStream.cpp /usr/share/faust/osclib/oscpack/ip/posix/UdpSocket.cpp /usr/share/faust/osclib/faust/src/osc/OSCStream.cpp /usr/share/faust/osclib/faust/src/nodes/RootNode.cpp /usr/share/faust/osclib/faust/src/osc/OSCAddress.cpp /usr/share/faust/osclib/faust/src/lib/OSCRegexp.cpp /usr/share/faust/osclib/faust/src/nodes/MessageDriven.cpp /usr/share/faust/osclib/faust/src/nodes/FaustFactory.cpp /usr/share/faust/osclib/faust/src/OSCControler.cpp /usr/share/faust/osclib/faust/src/nodes/FaustNode.cpp parametres.cpp parametres.h info.cpp info.h selectFile.cpp selectFile.h Application.cpp main.cpp Application.h -lboost_system -lboost_filesystem `pkg-config --libs jack` `pkg-config --libs sndfile` `pkg-config --libs sfml-graphics` `pkg-config --libs sfml-window` `pkg-config --libs sfml-system` -llo `pkg-config --cflags gtk+-2.0` `pkg-config --libs glu` -DGL_GLEXT_PROTOTYPES  `pkg-config --libs gtk+-2.0` -pthread -o mcMidiPlayer.bin
+ 
+ 
+ install: 
+@@ -23,16 +20,21 @@ install:
+ 	chmod 755 $(prefix)/bin/mcMidiPlayer.sh
+ 	cp mcMidiPlayer.bin  $(prefix)/bin
+ 	chmod 755 $(prefix)/bin/mcMidiPlayer.bin
+-	mkdir $(prefix)/share/mcMidiPlayer 
++	mkdir -p $(prefix)/share/mcMidiPlayer 
+ 	cp -Rfa Themes $(prefix)/share/mcMidiPlayer
+ 	cp -Rfa gui $(prefix)/share/mcMidiPlayer
+ 	cp -Rfa Lang $(prefix)/share/mcMidiPlayer
+-	cp midiPlayer $(prefix)/share/mcMidiPlayer
+-	chmod 755 $(prefix)/share/mcMidiPlayer
+-	cp simplePlayer2 $(prefix)/share/mcMidiPlayer
+-	chmod 755 $(prefix)/share/mcMidiPlayer
++	#cp midiPlayer $(prefix)/share/mcMidiPlayer
++	#chmod 755 $(prefix)/share/mcMidiPlayer
++	#cp simplePlayer2 $(prefix)/share/mcMidiPlayer
++	#chmod 755 $(prefix)/share/mcMidiPlayer
+ 	cp parametres.conf $(prefix)/share/mcMidiPlayer
+ 
++uninstall:
++	$(RM) $(prefix)/bin/mcMidiPlayer.sh
++	$(RM) $(prefix)/bin/mcMidiPlayer.bin
++	$(RM) -r $(prefix)/share/mcMidiPlayer
++
+ 
+ clean:
+ 	rm -f mcMidiPlayer.bin
+--- a/mcMidiPlayer.sh
++++ b/mcMidiPlayer.sh
+@@ -6,7 +6,7 @@ if [ -d ${dir} ] ; then
+ else    
+ 	mkdir ${dir}
+ 	echo "Le dossier paramètres ${dir} est créé"
+-	cp  /usr/local/share/mcMidiPlayer/parametres.conf ${dir}	
++	cp  /usr/share/mcMidiPlayer/parametres.conf ${dir}	
+ fi
+ dir="${HOME}/mcMidiPlayer"
+ if [ -d ${dir} ] ; then
+@@ -15,4 +15,4 @@ else
+ 	mkdir ${dir}
+ 	echo "Le dossier de travail ${dir} est créé"
+ fi
+-/usr/local/bin/mcMidiPlayer.bin ${HOME}
+\ No newline at end of file
++/usr/bin/mcMidiPlayer.bin ${HOME}
+--- a/selectFile.cpp
++++ b/selectFile.cpp
+@@ -437,8 +437,8 @@ void selectFile::onClick(sf::Event e){
+ 	       strcpy(file, vecFs[id].c_str());
+ 	       char commande[255];
+ 	       snprintf(commande, 255, "%s %s/%s", simplePlayer,getcwd(NULL,0), file);
+-	       std::cout << "player : " << commande << std::endl;
+-		    system(commande);
++	       std::cout << "(silence) player : " << commande << std::endl;
++		    //system(commande);
+ 		  }
+ 	  }
+    }
+--- a/simpleLecteur.cpp
++++ b/simpleLecteur.cpp
+@@ -22,6 +22,7 @@
+ #include "faust/gui/OSCControler.h"
+ #include "faust/gui/SoundUI.h"
+ #include "faust/misc.h"
++#include <faust/dsp/libfaust-c.h>
+ 
+ #include <sndfile.h>
+ 
+@@ -52,7 +53,7 @@ int main(int argc, char* argv[]){
+   GUI* oscinterface = nullptr;
+   string error_msg;
+     
+-  cout << "Libfaust version : " << getCLibFaustVersion () << endl;
++  //cout << "Libfaust version : " << getCLibFaustVersion () << endl;
+   
+   factory = createDSPFactoryFromFile(filename, 0,NULL, "", error_msg, -1);
+   if (!factory) {
+--- a/simpleLecteur2.cpp
++++ b/simpleLecteur2.cpp
+@@ -22,8 +22,9 @@
+ #include "faust/gui/OSCControler.h"
+ #include "faust/gui/SoundUI.h"
+ #include "faust/misc.h"
++#include <faust/dsp/libfaust-c.h>
+ 
+- #include <sndfile.h>
++#include <sndfile.h>
+ 
+ using namespace std;
+ 
+@@ -81,7 +82,7 @@ int main(int argc, char* argv[]){
+   GUI* oscinterface = nullptr;
+   string error_msg;
+     
+-  cout << "Libfaust version : " << getCLibFaustVersion () << endl;
++  //cout << "Libfaust version : " << getCLibFaustVersion () << endl;
+   
+   factory = createDSPFactoryFromString("simplePlayer",prog, 0,NULL, "", error_msg, -1);
+   if (!factory) {
