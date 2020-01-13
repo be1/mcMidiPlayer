@@ -3,7 +3,7 @@ Upstream-Name: mcMidiPlayer
 Source: https://github.com/dblanchemain/mcMidiPlayer
 
 Files: *
-Copyright: 2020 <put author's name and email here>
+Copyright: 2020 Dominique Blanchemain <dblanchemain@free.fr>
 License: GPL-3.0+
 
 Files: debian/*
