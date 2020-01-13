@@ -1,5 +1,7 @@
---- a/Application.cpp
-+++ b/Application.cpp
+Index: mcmidiplayer-1.0~git6cb4583/Application.cpp
+===================================================================
+--- mcmidiplayer-1.0~git6cb4583.orig/Application.cpp	2020-01-13 16:57:42.938755620 +0100
++++ mcmidiplayer-1.0~git6cb4583/Application.cpp	2020-01-13 16:57:42.938755620 +0100
 @@ -25,8 +25,6 @@
  #include "faust/gui/SoundUI.h"
  #include "faust/misc.h"
@@ -9,9 +11,11 @@
  #include "Application.h"
  #include "selectFile.h"
  #include "parametres.h"
---- a/Makefile
-+++ b/Makefile
-@@ -1,38 +1,30 @@
+Index: mcmidiplayer-1.0~git6cb4583/Makefile
+===================================================================
+--- mcmidiplayer-1.0~git6cb4583.orig/Makefile	2020-01-13 16:57:42.938755620 +0100
++++ mcmidiplayer-1.0~git6cb4583/Makefile	2020-01-13 16:58:06.103591333 +0100
+@@ -1,40 +1,33 @@
 -LIB ?= /usr/local/lib
 -INC = /usr/local/faust
 -
@@ -31,21 +35,22 @@
 -	$(CXX)  -std=c++17 -O3 simpleLecteur2.cpp   -ljack -lsndfile -lfaust -llo -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype -lpthread `pkg-config  ` -lOSCFaust -o simplePlayer2
 +	$(CXX)  -std=c++17 -g simpleLecteur2.cpp `pkg-config --libs jack` `pkg-config --libs sndfile` -llo `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -lfaust -lfaustmachine -lOSCFaust -pthread -o simplePlayer2
  
-  
+- 
  mcMidiPlayer: main.cpp 
 -	$(CXX)  -std=c++17 -O3 parametres.cpp parametres.h info.cpp info.h selectFile.cpp selectFile.h Application.cpp main.cpp Application.h   -I$(INC) -lboost_system -lboost_filesystem -ljack -lsndfile -lfaust -lsfml-graphics -lsfml-window -lsfml-system -llo -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0 -lGL -lGLU  -lGL  -DGL_GLEXT_PROTOTYPES  -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype -lpthread `pkg-config  ` -lOSCFaust -o mcMidiPlayer.bin
 +	$(CXX)  -std=c++17 -g parametres.cpp parametres.h info.cpp info.h selectFile.cpp selectFile.h Application.cpp main.cpp Application.h -lboost_system -lboost_filesystem `pkg-config --libs jack` `pkg-config --libs sndfile` `pkg-config --libs sfml-graphics` `pkg-config --libs sfml-window` `pkg-config --libs sfml-system` -llo `pkg-config --cflags gtk+-2.0` `pkg-config --libs glu` -DGL_GLEXT_PROTOTYPES  `pkg-config --libs gtk+-2.0` -lfaust -lfaustmachine -lOSCFaust -pthread -o mcMidiPlayer.bin
  
  
- install: 
+-install: 
 -	cp mcMidiPlayer.sh $(prefix)/bin
 -	chmod 755 $(prefix)/bin/mcMidiPlayer.sh
 -	cp mcMidiPlayer.bin  $(prefix)/bin
 -	chmod 755 $(prefix)/bin/mcMidiPlayer.bin
 -	mkdir $(prefix)/share/mcMidiPlayer 
++install:
 +	$(INSTALL) mcMidiPlayer.sh $(prefix)/bin/mcMidiPlayer.sh
 +	$(INSTALL) mcMidiPlayer.bin  $(prefix)/bin/mcMidiPlayer.bin
-+	mkdir -p $(prefix)/share/mcMidiPlayer 
++	mkdir -p $(prefix)/share/mcMidiPlayer
  	cp -Rfa Themes $(prefix)/share/mcMidiPlayer
  	cp -Rfa gui $(prefix)/share/mcMidiPlayer
  	cp -Rfa Lang $(prefix)/share/mcMidiPlayer
@@ -61,26 +66,34 @@
  
  clean:
  	rm -f mcMidiPlayer.bin
---- a/mcMidiPlayer.sh
-+++ b/mcMidiPlayer.sh
-@@ -6,7 +6,7 @@ if [ -d ${dir} ] ; then
++	rm -f midiPlayer
++	rm -f simplePlayer2
+ 
+ 
+Index: mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh
+===================================================================
+--- mcmidiplayer-1.0~git6cb4583.orig/mcMidiPlayer.sh	2020-01-13 16:57:42.938755620 +0100
++++ mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh	2020-01-13 16:59:33.590808779 +0100
+@@ -6,7 +6,7 @@
  else    
  	mkdir ${dir}
  	echo "Le dossier paramètres ${dir} est créé"
 -	cp  /usr/local/share/mcMidiPlayer/parametres.conf ${dir}	
-+	cp  /usr/share/mcMidiPlayer/parametres.conf ${dir}	
++	cp  /usr/share/mcMidiPlayer/parametres.conf ${dir}
  fi
  dir="${HOME}/mcMidiPlayer"
  if [ -d ${dir} ] ; then
-@@ -15,4 +15,4 @@ else
+@@ -15,4 +15,4 @@
  	mkdir ${dir}
  	echo "Le dossier de travail ${dir} est créé"
  fi
 -/usr/local/bin/mcMidiPlayer.bin ${HOME}
 \ No newline at end of file
 +/usr/bin/mcMidiPlayer.bin ${HOME}
---- a/simpleLecteur2.cpp
-+++ b/simpleLecteur2.cpp
+Index: mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp
+===================================================================
+--- mcmidiplayer-1.0~git6cb4583.orig/simpleLecteur2.cpp	2020-01-13 16:57:42.938755620 +0100
++++ mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp	2020-01-13 16:57:42.938755620 +0100
 @@ -23,7 +23,7 @@
  #include "faust/gui/SoundUI.h"
  #include "faust/misc.h"
@@ -90,3 +103,19 @@
  
  using namespace std;
  
+Index: mcmidiplayer-1.0~git6cb4583/parametres.conf
+===================================================================
+--- mcmidiplayer-1.0~git6cb4583.orig/parametres.conf	2020-01-13 16:57:42.938755620 +0100
++++ mcmidiplayer-1.0~git6cb4583/parametres.conf	2020-01-13 16:57:42.938755620 +0100
+@@ -1,7 +1,7 @@
+ Thème=base
+ Lang=Fr
+ Editeur=emacs
+-dossierConfig=/usr/local/share/mcMidiPlayer
+-simpleLecteur=/usr/local/share/mcMidiPlayer/simplePlayer2
+-midiPlayer=/usr/local/share/mcMidiPlayer/midiPlayer
+-dirBanque=/home/dominique/Compile/mcMidiPlayer
++dossierConfig=/usr/share/mcMidiPlayer
++simpleLecteur=/usr/share/mcMidiPlayer/simplePlayer2
++midiPlayer=/usr/share/mcMidiPlayer/midiPlayer
++dirBanque=~/mcMidiPlayer
