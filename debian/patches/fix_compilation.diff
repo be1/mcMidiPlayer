@@ -11,7 +11,7 @@
  #include "parametres.h"
 --- a/Makefile
 +++ b/Makefile
-@@ -1,21 +1,18 @@
+@@ -1,38 +1,30 @@
 -LIB ?= /usr/local/lib
 -INC = /usr/local/faust
 -
@@ -38,11 +38,13 @@
  
  
  install: 
-@@ -23,17 +20,16 @@ install:
- 	chmod 755 $(prefix)/bin/mcMidiPlayer.sh
- 	cp mcMidiPlayer.bin  $(prefix)/bin
- 	chmod 755 $(prefix)/bin/mcMidiPlayer.bin
+-	cp mcMidiPlayer.sh $(prefix)/bin
+-	chmod 755 $(prefix)/bin/mcMidiPlayer.sh
+-	cp mcMidiPlayer.bin  $(prefix)/bin
+-	chmod 755 $(prefix)/bin/mcMidiPlayer.bin
 -	mkdir $(prefix)/share/mcMidiPlayer 
++	$(INSTALL) mcMidiPlayer.sh $(prefix)/bin/mcMidiPlayer.sh
++	$(INSTALL) mcMidiPlayer.bin  $(prefix)/bin/mcMidiPlayer.bin
 +	mkdir -p $(prefix)/share/mcMidiPlayer 
  	cp -Rfa Themes $(prefix)/share/mcMidiPlayer
  	cp -Rfa gui $(prefix)/share/mcMidiPlayer
@@ -51,16 +53,14 @@
 -	chmod 755 $(prefix)/share/mcMidiPlayer
 -	cp simplePlayer2 $(prefix)/share/mcMidiPlayer
 -	chmod 755 $(prefix)/share/mcMidiPlayer
-+	#cp midiPlayer $(prefix)/share/mcMidiPlayer
-+	#chmod 755 $(prefix)/share/mcMidiPlayer
-+	#cp simplePlayer2 $(prefix)/share/mcMidiPlayer
-+	#chmod 755 $(prefix)/share/mcMidiPlayer
- 	cp parametres.conf $(prefix)/share/mcMidiPlayer
- 
+-	cp parametres.conf $(prefix)/share/mcMidiPlayer
 -
++	$(INSTALL) midiPlayer $(prefix)/share/mcMidiPlayer/midiPlayer
++	$(INSTALL) simplePlayer2 $(prefix)/share/mcMidiPlayer/simplePlayer2
++	cp parametres.conf $(prefix)/share/mcMidiPlayer/
+ 
  clean:
  	rm -f mcMidiPlayer.bin
- 
 --- a/mcMidiPlayer.sh
 +++ b/mcMidiPlayer.sh
 @@ -6,7 +6,7 @@ if [ -d ${dir} ] ; then
