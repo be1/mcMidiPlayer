@@ -1,7 +1,7 @@
 Index: mcmidiplayer-1.0~git6cb4583/Application.cpp
 ===================================================================
---- mcmidiplayer-1.0~git6cb4583.orig/Application.cpp	2020-01-13 16:57:42.938755620 +0100
-+++ mcmidiplayer-1.0~git6cb4583/Application.cpp	2020-01-13 16:57:42.938755620 +0100
+--- mcmidiplayer-1.0~git6cb4583.orig/Application.cpp	2020-01-13 17:06:43.587633514 +0100
++++ mcmidiplayer-1.0~git6cb4583/Application.cpp	2020-01-13 17:06:56.348150933 +0100
 @@ -25,8 +25,6 @@
  #include "faust/gui/SoundUI.h"
  #include "faust/misc.h"
@@ -11,10 +11,19 @@ Index: mcmidiplayer-1.0~git6cb4583/Application.cpp
  #include "Application.h"
  #include "selectFile.h"
  #include "parametres.h"
+@@ -44,7 +42,7 @@
+   fichierParametres=s+ds;
+   adr.clear();
+   adr.str("");
+-  dossierConfig="/usr/local/share/mcMidiPlayer";
++  dossierConfig="/usr/share/mcMidiPlayer";
+   adr << std::fixed <<dossierConfig<< "/gui";
+   appGui=adr.str();
+   adr.clear();
 Index: mcmidiplayer-1.0~git6cb4583/Makefile
 ===================================================================
---- mcmidiplayer-1.0~git6cb4583.orig/Makefile	2020-01-13 16:57:42.938755620 +0100
-+++ mcmidiplayer-1.0~git6cb4583/Makefile	2020-01-13 16:58:06.103591333 +0100
+--- mcmidiplayer-1.0~git6cb4583.orig/Makefile	2020-01-13 17:06:43.587633514 +0100
++++ mcmidiplayer-1.0~git6cb4583/Makefile	2020-01-13 17:06:43.583633351 +0100
 @@ -1,40 +1,33 @@
 -LIB ?= /usr/local/lib
 -INC = /usr/local/faust
@@ -72,8 +81,8 @@ Index: mcmidiplayer-1.0~git6cb4583/Makefile
  
 Index: mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh
 ===================================================================
---- mcmidiplayer-1.0~git6cb4583.orig/mcMidiPlayer.sh	2020-01-13 16:57:42.938755620 +0100
-+++ mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh	2020-01-13 16:59:33.590808779 +0100
+--- mcmidiplayer-1.0~git6cb4583.orig/mcMidiPlayer.sh	2020-01-13 17:06:43.587633514 +0100
++++ mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh	2020-01-13 17:06:43.583633351 +0100
 @@ -6,7 +6,7 @@
  else    
  	mkdir ${dir}
@@ -92,8 +101,8 @@ Index: mcmidiplayer-1.0~git6cb4583/mcMidiPlayer.sh
 +/usr/bin/mcMidiPlayer.bin ${HOME}
 Index: mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp
 ===================================================================
---- mcmidiplayer-1.0~git6cb4583.orig/simpleLecteur2.cpp	2020-01-13 16:57:42.938755620 +0100
-+++ mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp	2020-01-13 16:57:42.938755620 +0100
+--- mcmidiplayer-1.0~git6cb4583.orig/simpleLecteur2.cpp	2020-01-13 17:06:43.587633514 +0100
++++ mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp	2020-01-13 17:06:43.583633351 +0100
 @@ -23,7 +23,7 @@
  #include "faust/gui/SoundUI.h"
  #include "faust/misc.h"
@@ -105,8 +114,8 @@ Index: mcmidiplayer-1.0~git6cb4583/simpleLecteur2.cpp
  
 Index: mcmidiplayer-1.0~git6cb4583/parametres.conf
 ===================================================================
---- mcmidiplayer-1.0~git6cb4583.orig/parametres.conf	2020-01-13 16:57:42.938755620 +0100
-+++ mcmidiplayer-1.0~git6cb4583/parametres.conf	2020-01-13 16:57:42.938755620 +0100
+--- mcmidiplayer-1.0~git6cb4583.orig/parametres.conf	2020-01-13 17:06:43.587633514 +0100
++++ mcmidiplayer-1.0~git6cb4583/parametres.conf	2020-01-13 17:06:43.583633351 +0100
 @@ -1,7 +1,7 @@
  Thème=base
  Lang=Fr
